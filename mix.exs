@@ -7,12 +7,13 @@ defmodule WhatsappFlowCrypto.MixProject do
   def project do
     [
       app: :whatsapp_flow_crypto,
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.17",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: docs(),
-      package: package()
+      package: package(),
+      name: "WhatsApp-Flow-Crypto",
     ]
   end
 
