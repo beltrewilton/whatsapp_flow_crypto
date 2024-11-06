@@ -66,3 +66,54 @@ For the detail see the `WhatsappFlowCrypto`.
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at <https://hexdocs.pm/whatsapp_flow_crypto>.
+
+
+## A few notes on the tweaks I made to get it running smoothly:
+
+ - Extracted the unencrypted version of my private.pem.
+ - Removed all spacing from the keys within the data (the request from Meta).
+ - I updated a local copy of the project dependency from :json to jason 1.4 for compatibility.
+
+```shell
+ openssl rsa -in private.pem -out private_unencrypted.pem
+ ```
+
+```elixir
+   # Meta encrypted data 
+   data = %{
+      "encrypted_flow_data" => "23Oj6TJZsqJiow5YW......oUJxS1X",
+      "encrypted_aes_key" => "C7RUBA...qmd2DLCMwdQ==",
+      "initial_vector" => "fAkALM....LdQ=="
+    }
+
+    encrypted_flow_data = data["encrypted_flow_data"]
+    encrypted_aes_key = data["encrypted_aes_key"]
+    initial_vector = data["initial_vector"]
+
+    {:ok, private_key_pem} = File.read("certs/private_unencrypted.pem")
+
+    {:ok, ref} = WhatsappFlowCrypto.fetch_private_key(private_key_pem)
+
+    WhatsappFlowCrypto.decrypt_request(ref, encrypted_aes_key, initial_vector, encrypted_flow_data)
+```
+
+
+```elixir
+# Response fragment
+response =  %{
+        "version" => result["version"],
+        "action" => result["action"],
+        "screen" => "SUCCESS",
+        "data" => %{
+            "extension_message_response" => %{
+                "params" => %{
+                    "flow_token" => result["flow_token"]
+                }
+            }
+        }
+    }
+ 
+WhatsappFlowCrypto.encrypt_response(aes_key, initial_vector, response)
+ 
+"ytDoGowFRn..."
+ ```
