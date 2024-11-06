@@ -27,7 +27,8 @@ defmodule WhatsappFlowCrypto.MixProject do
     [
       {:rustler, "~> 0.34.0"},
       {:ex_doc, "~> 0.32.2", only: :dev, runtime: false},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:jason, "~> 1.4"}
     ]
   end
 

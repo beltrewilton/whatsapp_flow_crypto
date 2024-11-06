@@ -64,7 +64,7 @@ defmodule WhatsappFlowCrypto do
           encrypted_flow_data_tag,
           false
         )
-        |> :json.decode()
+        |> Jason.decode!()
 
       {:ok, {decrypted_body, aes_key, initial_vector}}
     end
@@ -76,7 +76,7 @@ defmodule WhatsappFlowCrypto do
   def encrypt_response(decrypted_aes_key, initial_vector, response) do
     response =
       response
-      |> :json.encode()
+      |> Jason.encode!()
       |> IO.iodata_to_binary()
 
     initial_vector = flip_initial_vector(initial_vector)
